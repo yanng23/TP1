@@ -15,7 +15,7 @@ import javax.swing.plaf.basic.BasicSliderUI.TrackListener;
 public class RangeSliderUI extends BasicSliderUI {
 	
     /** Thumb rectangle */
-    public Rectangle thumbRectLeft = null;
+    public Rectangle thumbRectRight = null;
     
 	public RangeSliderUI(RangeSlider b) {
 		super(b);
@@ -30,35 +30,38 @@ public class RangeSliderUI extends BasicSliderUI {
     public void paint( Graphics g, JComponent c ) {
     	super.paint(g, c);
     	
-    	paintLeftThumb(g);
+    	paintRightThumb(g);
     }
 	
-	public void calculateLeftThumbLocation() {
-		int val_left  = 10;
-        int valuePosition = xPositionForValue(val_left);
+    @Override
+    protected void calculateThumbLocation() {
+        // Call superclass method for lower thumb location.
+        super.calculateThumbLocation();
         
-        thumbRectLeft.x = valuePosition - (thumbRectLeft.width / 2);
-        thumbRectLeft.y = trackRect.y;
-	}
+		int valuePosition = xPositionForValue(slider.getValue() + slider.getExtent());
+
+		thumbRectRight.x = valuePosition - (thumbRectRight.width / 2);
+		thumbRectRight.y = trackRect.y;
+    }
 	
     /**
      * Calculates the thumb size rectangle.
      */
-    protected void calculateLeftThumbSize() {
+    protected void calculateRightThumbSize() {
         Dimension size = getThumbSize();
-        thumbRectLeft.setSize( size.width, size.height );
+        thumbRectRight.setSize( size.width, size.height );
     }
 	@Override
     protected void calculateGeometry() {
 		super.calculateGeometry();
 		
-    	calculateLeftThumbSize();
-    	calculateLeftThumbLocation();
+    	calculateRightThumbSize();
+    	//calculateRightThumbLocation();
     }
     
     @Override
     public void installUI(JComponent c)   {
-    	thumbRectLeft = new Rectangle();
+    	thumbRectRight = new Rectangle();
     	super.installUI(c);    	
     }
     
@@ -66,8 +69,8 @@ public class RangeSliderUI extends BasicSliderUI {
      * Paints the thumb.
      * @param g the graphics
      */
-    public void paintLeftThumb(Graphics g)  {
-        Rectangle knobBounds = thumbRectLeft;
+    public void paintRightThumb(Graphics g)  {
+        Rectangle knobBounds = thumbRectRight;
         
         int w = knobBounds.width;
         int h = knobBounds.height;
@@ -105,9 +108,14 @@ public class RangeSliderUI extends BasicSliderUI {
         g.translate(-knobBounds.x, -knobBounds.y);
     }
     
-    public void setUpperThumbLocation(int x, int y)  {
-    	thumbRectLeft.x = x;
-    	thumbRectLeft.y = y;
+    public void setRightThumbLocation(int x, int y)  {
+        Rectangle upperUnionRect = new Rectangle();
+        upperUnionRect.setBounds(thumbRectRight);
+
+        thumbRectRight.setLocation(x, y);
+
+        SwingUtilities.computeUnion(thumbRectRight.x, thumbRectRight.y, thumbRectRight.width, thumbRectRight.height, upperUnionRect);
+        slider.repaint(upperUnionRect.x, upperUnionRect.y, upperUnionRect.width, upperUnionRect.height);
     }
     
 	public enum State{
@@ -125,8 +133,8 @@ public class RangeSliderUI extends BasicSliderUI {
 			System.out.println("IDLE");
 			m_state = State.IDLE;
 			slider.repaint();
-			
-            offset = 0;
+            slider.setValueIsAdjusting(false);
+            super.mouseReleased(e);
 		}
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -140,90 +148,21 @@ public class RangeSliderUI extends BasicSliderUI {
 			int currentMouseY = e.getY();
 			
 			// Clicked right thumb?
+			
 			if (thumbRect.contains(currentMouseX, currentMouseY)) {
-				System.out.println("Right clicked");
-				offset = currentMouseX - thumbRect.x;
-				m_state = State.DraggingRight;
-				return;
-			}
-			//Clicked left thumb
-			else if(thumbRectLeft.contains(currentMouseX, currentMouseY)) {
 				System.out.println("Left clicked");
 				offset = currentMouseX - thumbRect.x;
 				m_state = State.DraggingLeft;
-				return;
 			}
+			//Clicked left thumb
 			/*
-			if (!SwingUtilities.isLeftMouseButton(e)) {
-				return;
-			}
-			
-			isDragging = false;
-			slider.setValueIsAdjusting(true);
-			
-			Dimension sbSize = slider.getSize();
-			int direction = POSITIVE_SCROLL;
-			
-			switch (slider.getOrientation()) {
-			case JSlider.VERTICAL:
-				if ( thumbRect.isEmpty() ) {
-					int scrollbarCenter = sbSize.height / 2;
-					if ( !drawInverted() ) {
-						direction = (currentMouseY < scrollbarCenter) ?
-								POSITIVE_SCROLL : NEGATIVE_SCROLL;
-					}
-					else {
-						direction = (currentMouseY < scrollbarCenter) ?
-								NEGATIVE_SCROLL : POSITIVE_SCROLL;
-					}
-				}
-				else {
-					int thumbY = thumbRect.y;
-					if ( !drawInverted() ) {
-						direction = (currentMouseY < thumbY) ?
-								POSITIVE_SCROLL : NEGATIVE_SCROLL;
-					}
-					else {
-						direction = (currentMouseY < thumbY) ?
-								NEGATIVE_SCROLL : POSITIVE_SCROLL;
-					}
-				}
-				break;
-			case JSlider.HORIZONTAL:
-				if ( thumbRect.isEmpty() ) {
-					int scrollbarCenter = sbSize.width / 2;
-					if ( !drawInverted() ) {
-						direction = (currentMouseX < scrollbarCenter) ?
-								NEGATIVE_SCROLL : POSITIVE_SCROLL;
-					}
-					else {
-						direction = (currentMouseX < scrollbarCenter) ?
-								POSITIVE_SCROLL : NEGATIVE_SCROLL;
-					}
-				}
-				else {
-					int thumbX = thumbRect.x;
-					if ( !drawInverted() ) {
-						direction = (currentMouseX < thumbX) ?
-								NEGATIVE_SCROLL : POSITIVE_SCROLL;
-					}
-					else {
-						direction = (currentMouseX < thumbX) ?
-								POSITIVE_SCROLL : NEGATIVE_SCROLL;
-					}
-				}
-				break;
-			}
-			
-			if (shouldScroll(direction)) {
-				scrollDueToClickInTrack(direction);
-			}
-			if (shouldScroll(direction)) {
-				scrollTimer.stop();
-				scrollListener.setDirection(direction);
-				scrollTimer.start();
+			if(thumbRectRight.contains(currentMouseX, currentMouseY)) {
+				System.out.println("Left clicked");
+				offset = currentMouseX - thumbRectRight.x;
+				m_state = State.DraggingLeft;
 			}*/
 		}
+		
 		@Override
         public void mouseDragged(MouseEvent e) {
             int thumbMiddle;
@@ -234,31 +173,60 @@ public class RangeSliderUI extends BasicSliderUI {
 
             currentMouseX = e.getX();
             currentMouseY = e.getY();
-            System.out.println(m_state);
-            if (m_state == State.DraggingLeft && m_state == State.DraggingRight) {
-                return;
-            }
 
             slider.setValueIsAdjusting(true);
+            
+            int halfThumbWidth;
+            int thumbLeft;
+            int trackLeft;
+            int trackRight;
+            int hMax;
+            int hMin;
+            switch(m_state) {
+            case DraggingLeft:
+                halfThumbWidth = thumbRectRight.width / 2;
+                thumbLeft = e.getX() - offset;
+                trackLeft = trackRect.x;
+                trackRight = trackRect.x + (trackRect.width - 1);
+                hMax = xPositionForValue(slider.getValue() +
+                                            slider.getExtent());
 
-            int halfThumbWidth = thumbRect.width / 2;
-            int thumbLeft = e.getX() - offset;
-            int trackLeft = trackRect.x;
-            int trackRight = trackRect.x + (trackRect.width - 1);
-            int hMax = xPositionForValue(slider.getMaximum() - slider.getExtent());
-            trackRight = hMax;
-            
-            thumbLeft = Math.max(thumbLeft, trackLeft - halfThumbWidth);
-            thumbLeft = Math.min(thumbLeft, trackRight - halfThumbWidth);
-            System.out.println(thumbLeft + " " + thumbRect.y);
-            
-            if(m_state == State.DraggingLeft)
-            	setThumbLocation(thumbLeft, thumbRect.y);
-            else if (m_state == State.DraggingRight)
-            	setUpperThumbLocation(thumbLeft, thumbRect.y);
-            
-            thumbMiddle = thumbLeft + halfThumbWidth;
-            slider.setValue(valueForXPosition(thumbMiddle));
+                trackRight = hMax;
+
+                thumbLeft = Math.max(thumbLeft, trackLeft - halfThumbWidth);
+                thumbLeft = Math.min(thumbLeft, trackRight - halfThumbWidth);
+
+                setThumbLocation(thumbLeft, thumbRect.y);
+                
+                thumbMiddle = thumbLeft + halfThumbWidth;
+                
+                int diff = valueForXPosition(thumbMiddle) - slider.getValue();
+                slider.setExtent(slider.getExtent() - diff);
+                slider.setValue(valueForXPosition(thumbMiddle));
+            	break;
+            	
+            case DraggingRight:
+                halfThumbWidth = thumbRectRight.width / 2;
+                thumbLeft = e.getX() - offset;
+                trackLeft = trackRect.x;
+                trackRight = trackRect.x + (trackRect.width - 1);
+                hMax = xPositionForValue(slider.getMaximum() -
+                                            slider.getExtent());
+
+                trackRight = hMax;
+
+                thumbLeft = Math.max(thumbLeft, trackLeft - halfThumbWidth);
+                thumbLeft = Math.min(thumbLeft, trackRight - halfThumbWidth);
+
+                setRightThumbLocation(thumbLeft, thumbRectRight.y);
+
+                thumbMiddle = thumbLeft + halfThumbWidth;
+                slider.setValue(valueForXPosition(thumbMiddle));
+                System.out.println("Right:" + slider.getValue());
+                break;
+			default:
+				return;
+            }      
         }
 	}
 }

@@ -10,6 +10,7 @@ public class Main {
 		frame.setSize(400, 100);
 
 		RangeSlider le_m = new RangeSlider();
+		le_m.getModel().setExtent(20);
         frame.getContentPane().add(le_m);
         /*
         JSlider js = new JSlider();

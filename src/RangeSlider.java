@@ -1,5 +1,6 @@
 import javax.swing.JComponent;
 import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.basic.BasicSliderUI.TrackListener;
 
