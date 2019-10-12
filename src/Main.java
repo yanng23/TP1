@@ -11,9 +11,9 @@ public class Main {
 
 		RangeSlider le_m = new RangeSlider();
         frame.getContentPane().add(le_m);
-        
+        /*
         JSlider js = new JSlider();
-        //frame.getContentPane().add(js);
+        frame.getContentPane().add(js);*/
         
         
         frame.setVisible(true);
