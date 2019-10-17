@@ -19,7 +19,9 @@ public class RangeSliderUI extends BasicSliderUI {
     
 	public RangeSliderUI(RangeSlider b) {
 		super(b);
+		
 	}
+	
 	
 	@Override
     public TrackListener createTrackListener(JSlider slider) {
@@ -161,20 +163,32 @@ public class RangeSliderUI extends BasicSliderUI {
 				m_state = State.DraggingRight;
 			}
 			else {
-				click();
+				click(e);
 			}
 		}
 		
-		public void click() {
+		public void click(MouseEvent e) {
 			slider.setValueIsAdjusting(true);
-
-            int direction = (currentMouseX < slider.getValue()) ? POSITIVE_SCROLL : NEGATIVE_SCROLL;
+            currentMouseX = e.getX();
+            currentMouseY = e.getY();
+            
+			System.out.println(currentMouseX + " " +xPositionForValue(slider.getValue()));
+            
+			//Search for the closest
+			int direction = (currentMouseX < xPositionForValue(slider.getValue())) ? NEGATIVE_SCROLL : POSITIVE_SCROLL;
             switch(direction) {
             case POSITIVE_SCROLL:
-            	if(slider.getExtent() > 2)
+            	if(slider.getExtent() >= 2)
             		MoveLeft(xPositionForValue(slider.getValue() + 2));
             	else
             		MoveLeft(xPositionForValue(slider.getValue()) + slider.getExtent());
+            	break;
+            case NEGATIVE_SCROLL:
+            	System.out.println("neg");
+            	if(slider.getValue() >= 2)
+            		MoveLeft(xPositionForValue(slider.getValue() - 2));
+            	else
+            		MoveLeft(xPositionForValue(0));
             	break;
             }
             System.out.println(slider.getValue());
