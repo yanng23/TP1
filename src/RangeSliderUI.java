@@ -30,9 +30,10 @@ public class RangeSliderUI extends BasicSliderUI {
 	
 	@Override
     public void paint( Graphics g, JComponent c ) {
-    	super.paint(g, c);
+		super.paint(g, c);
     	
-    	paintRightThumb(g);
+    	paintMiddle(g);
+    	paintThumb(g);
     }
 	
     @Override
@@ -71,8 +72,9 @@ public class RangeSliderUI extends BasicSliderUI {
      * Paints the thumb.
      * @param g the graphics
      */
-    public void paintRightThumb(Graphics g)  {
-        Rectangle knobBounds = thumbRectRight;
+    @Override
+    public void paintThumb(Graphics g)  {
+        Rectangle knobBounds = thumbRect;
         
         int w = knobBounds.width;
         int h = knobBounds.height;
@@ -85,29 +87,58 @@ public class RangeSliderUI extends BasicSliderUI {
         else {
             g.setColor(slider.getBackground().darker());
         }
-        
-            int cw = w / 2;
-            g.fillRect(1, 1, w-3, h-1-cw);
-            Polygon p = new Polygon();
-            p.addPoint(1, h-cw);
-            p.addPoint(cw-1, h-1);
-            p.addPoint(w-2, h-1-cw);
-            g.fillPolygon(p);
+        g.fillRect(0, 0, w, h);
 
-            g.setColor(getHighlightColor());
-            g.drawLine(0, 0, w-2, 0);
-            g.drawLine(0, 1, 0, h-1-cw);
-            g.drawLine(0, h-cw, cw-1, h-1);
+        g.setColor(Color.black);
+        g.drawLine(0, h-1, w-1, h-1);
+        g.drawLine(w-1, 0, w-1, h-1);
 
-            g.setColor(Color.black);
-            g.drawLine(w-1, 0, w-1, h-2-cw);
-            g.drawLine(w-1, h-1-cw, w-1-cw, h-1);
+        g.setColor(getHighlightColor());
+        g.drawLine(0, 0, 0, h-2);
+        g.drawLine(1, 0, w-2, 0);
 
-            g.setColor(getShadowColor());
-            g.drawLine(w-2, 1, w-2, h-2-cw);
-            g.drawLine(w-2, h-1-cw, w-1-cw, h-2);
+        g.setColor(getShadowColor());
+        g.drawLine(1, h-2, w-2, h-2);
+        g.drawLine(w-2, 1, w-2, h-3);
 
         g.translate(-knobBounds.x, -knobBounds.y);
+        
+        knobBounds = thumbRectRight;
+        
+        w = knobBounds.width;
+        h = knobBounds.height;
+
+        g.translate(knobBounds.x, knobBounds.y);
+
+        if ( slider.isEnabled() ) {
+            g.setColor(slider.getBackground());
+        }
+        else {
+            g.setColor(slider.getBackground().darker());
+        }
+        
+        g.fillRect(0, 0, w, h);
+
+        g.setColor(Color.black);
+        g.drawLine(0, h-1, w-1, h-1);
+        g.drawLine(w-1, 0, w-1, h-1);
+
+        g.setColor(getHighlightColor());
+        g.drawLine(0, 0, 0, h-2);
+        g.drawLine(1, 0, w-2, 0);
+
+        g.setColor(getShadowColor());
+        g.drawLine(1, h-2, w-2, h-2);
+        g.drawLine(w-2, 1, w-2, h-3);
+
+        g.translate(-knobBounds.x, -knobBounds.y);
+    }
+    
+    public void paintMiddle(Graphics g) {
+    	int thick = 4;
+    	g.translate(thumbRect.x + thumbRect.width / 2, thumbRect.y + thumbRect.height / 2 - thick / 2);// - thick/2);
+    	g.fillRect(0, 0, thumbRectRight.x - thumbRect.x, 4);
+    	g.translate(-(thumbRect.x + thumbRect.width / 2), -(thumbRect.y + thumbRect.height / 2 - thick / 2));
     }
     
     public void setRightThumbLocation(int x, int y)  {
@@ -123,6 +154,8 @@ public class RangeSliderUI extends BasicSliderUI {
 	public enum State{
 		DraggingLeft,
 		DraggingRight,
+		SelectedRight,
+		SelectedLeft,
 		IDLE
 	}
 	
@@ -132,15 +165,20 @@ public class RangeSliderUI extends BasicSliderUI {
 		
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			System.out.println("IDLE");
-			m_state = State.IDLE;
+			switch(m_state) {
+			case DraggingLeft:
+				m_state = State.SelectedLeft;
+				break;
+			case DraggingRight:
+				m_state = State.SelectedRight;
+				break;
+			}
 			slider.repaint();
             slider.setValueIsAdjusting(false);
             super.mouseReleased(e);
 		}
 		@Override
 		public void mousePressed(MouseEvent e) {
-			System.out.println("Clicked");
 			if (!slider.isEnabled()) {
 				return;
 			}
@@ -150,15 +188,12 @@ public class RangeSliderUI extends BasicSliderUI {
 			int currentMouseY = e.getY();
 			
 			// Clicked right thumb?
-			
 			if (thumbRect.contains(currentMouseX, currentMouseY)) {
-				System.out.println("Left clicked");
 				offset = currentMouseX - thumbRect.x;
 				m_state = State.DraggingLeft;
 			}
 			//Clicked left thumb
 			else if(thumbRectRight.contains(currentMouseX, currentMouseY)) {
-				System.out.println("Right clicked");
 				offset = currentMouseX - thumbRectRight.x;
 				m_state = State.DraggingRight;
 			}
@@ -172,32 +207,47 @@ public class RangeSliderUI extends BasicSliderUI {
             currentMouseX = e.getX();
             currentMouseY = e.getY();
             
-			System.out.println(currentMouseX + " " +xPositionForValue(slider.getValue()));
-            
-			//Search for the closest
-			int direction = (currentMouseX < xPositionForValue(slider.getValue())) ? NEGATIVE_SCROLL : POSITIVE_SCROLL;
-            switch(direction) {
-            case POSITIVE_SCROLL:
-            	if(slider.getExtent() >= 2)
-            		MoveLeft(xPositionForValue(slider.getValue() + 2));
-            	else
-            		MoveLeft(xPositionForValue(slider.getValue()) + slider.getExtent());
-            	break;
-            case NEGATIVE_SCROLL:
-            	System.out.println("neg");
-            	if(slider.getValue() >= 2)
-            		MoveLeft(xPositionForValue(slider.getValue() - 2));
-            	else
-            		MoveLeft(xPositionForValue(0));
-            	break;
-            }
-            System.out.println(slider.getValue());
+			int direction;
+			switch(m_state) {
+			case SelectedLeft:
+				direction = (currentMouseX < xPositionForValue(slider.getValue())) ? NEGATIVE_SCROLL : POSITIVE_SCROLL;
+				switch(direction) {
+				case POSITIVE_SCROLL:
+					if(slider.getExtent() >= 2)
+						MoveLeft(xPositionForValue(slider.getValue() + 2));
+					else
+						MoveLeft(xPositionForValue(slider.getValue()) + slider.getExtent());
+					break;
+				case NEGATIVE_SCROLL:
+					if(slider.getValue() >= 2)
+						MoveLeft(xPositionForValue(slider.getValue() - 2));
+					else
+						MoveLeft(xPositionForValue(0));
+					break;
+				}
+				break;
+			case SelectedRight:
+				direction = (currentMouseX < xPositionForValue(slider.getValue() + slider.getExtent())) ? NEGATIVE_SCROLL : POSITIVE_SCROLL;
+				switch(direction) {
+				case POSITIVE_SCROLL:
+					slider.setExtent(slider.getExtent() + 2);
+					break;
+				case NEGATIVE_SCROLL:
+					slider.setExtent(slider.getExtent() - 2);
+					break;
+				}
+				break;
+			}
 		}
 		
 		public void MoveLeft(int thumbMiddle) {
             int diff = valueForXPosition(thumbMiddle) - slider.getValue();
             slider.setExtent(slider.getExtent() - diff);
             slider.setValue(valueForXPosition(thumbMiddle));
+		}
+		
+		public void MoveRight(int thumbMiddle) {
+			
 		}
 		
 		@Override
@@ -256,7 +306,6 @@ public class RangeSliderUI extends BasicSliderUI {
                 // Update slider extent.
                 thumbMiddle = thumbLeft + halfThumbWidth;
                 slider.setExtent(valueForXPosition(thumbMiddle) - slider.getValue());
-                System.out.println("Right:" + slider.getValue());
                 break;
 			default:
 				return;

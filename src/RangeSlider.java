@@ -11,6 +11,19 @@ public class RangeSlider extends JSlider {
 		setOrientation(JSlider.HORIZONTAL);
 	}
 	
+	public RangeSlider(int low, int up) {
+		getModel().setValue(low);
+		getModel().setExtent(up-low);
+	}
+	
+	public int GetLow() {
+		return getModel().getValue();
+	}
+	
+	public int GetUp() {
+		return getModel().getValue() + getModel().getExtent();
+	}
+	
     public static ComponentUI createUI(JComponent b)    {
         return new RangeSliderUI((RangeSlider)b);
     }
