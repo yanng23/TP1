@@ -1,4 +1,4 @@
-package MarkingMenu;
+package TP2;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -8,7 +8,7 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
 
-import Paint.PaintController.Tool;
+import TP2.PaintController.Tool;
 
 public class MarkingMenuUI extends ComponentUI{
 	MarkingMenuController m_controller;
@@ -51,6 +51,7 @@ public class MarkingMenuUI extends ComponentUI{
 					m_data.y,
 					m_data.mouseX,
 					m_data.mouseY);
+			System.out.println("Paint");
 		}
 	}
 }

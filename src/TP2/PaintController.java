@@ -1,4 +1,4 @@
-package Paint;
+package TP2;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -7,8 +7,6 @@ import java.awt.event.MouseListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.event.MouseInputListener;
-
-import MarkingMenu.MarkingMenuController;
 
 @SuppressWarnings("serial")
 public class PaintController implements MouseListener{
@@ -68,10 +66,12 @@ public class PaintController implements MouseListener{
 	
 	public PaintController(String title) {
 		m_state = State.IDLE;
+
 		m_markingMenu = new MarkingMenuController();
 		m_markingMenu.setTools(getTools());
-		
+	
 		m_paintUI = new PaintUI(title, m_markingMenu, this);
+		m_markingMenu.setPaintUI(m_paintUI);
 	}
 	
 	@Override
@@ -94,7 +94,9 @@ public class PaintController implements MouseListener{
 		if(m_state == State.IDLE && e.getButton() == MouseEvent.BUTTON3) {
 			m_state = State.MarkingMenu;
 			m_markingMenu.setActive(true);
-			m_markingMenu.setOrigin(e.getPoint().x, e.getPoint().y);
+			m_markingMenu.setOrigin(e.getPoint());
+			//Without it the red line is starting from 0,0 before a mouse motion
+			m_markingMenu.setMousePosition(e.getPoint());
 			
 			System.out.println("Changed state to MarkingMenu");			
 			m_paintUI.rePaint();

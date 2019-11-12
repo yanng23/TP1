@@ -1,15 +1,17 @@
-package MarkingMenu;
+package TP2;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JComponent;
 
-import Paint.PaintController.Tool;
+import TP2.PaintController.Tool;
 
 @SuppressWarnings("serial")
 public class MarkingMenuController extends JComponent implements MouseMotionListener{
+	PaintUI m_paintUI;
 	
 	MarkingMenuUI m_ui;
 	MarkingMenuData m_data;
@@ -23,7 +25,12 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 		m_data = new MarkingMenuData(50);
 		m_ui = new MarkingMenuUI(this, m_data);
 		
+		
 		this.setUI(m_ui);
+	}
+	
+	public void setPaintUI(PaintUI paintUI) {
+		m_paintUI = paintUI;
 	}
 	
     @Override
@@ -54,17 +61,24 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 		m_data.isDrawn = active;
 	}
 	
-	public void setOrigin(int originX, int originY) {
-		m_data.x = originX;
-		m_data.y = originY;
+	public void setOrigin(Point origin) {
+		m_data.x = origin.x;
+		m_data.y = origin.y;
+	}
+	
+	public void setMousePosition(Point mouse) {
+		m_data.mouseX = mouse.x;
+		m_data.mouseY = mouse.y;
 	}
 	
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println("Aller ca drag");
+		m_data.mouseX = e.getPoint().x;
+		m_data.mouseY = e.getPoint().y;
 		
+		m_paintUI.rePaint();
+		System.out.println(m_data.mouseX);
 	}
 
 	@Override

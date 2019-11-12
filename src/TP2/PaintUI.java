@@ -1,4 +1,4 @@
-package Paint;
+package TP2;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,8 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-
-import MarkingMenu.MarkingMenuController;
 
 @SuppressWarnings("serial")
 class PaintUI extends JFrame {
@@ -55,7 +53,6 @@ class PaintUI extends JFrame {
         		add(tool);
         	}
         }}, BorderLayout.NORTH);
-        m_panel.setLocation(200,200);
         m_panel.add(markingMenu);
         m_panel.addMouseMotionListener(markingMenu);
         

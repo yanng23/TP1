@@ -1,4 +1,4 @@
-package MarkingMenu;
+package TP2;
 
 public class MarkingMenuData {
 	public int x;
