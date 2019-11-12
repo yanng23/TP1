@@ -4,9 +4,11 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 
 import javax.swing.JComponent;
 
+import TP2.PaintController.State;
 import TP2.PaintData.Tool;
 
 
@@ -17,10 +19,12 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 	MarkingMenuUI m_ui;
 	MarkingMenuData m_data;
 	Tool[] m_tools;
+	PaintController m_paintController;
 	
 	Dimension m_dimension ;
 
-	public MarkingMenuController(){
+	public MarkingMenuController(PaintController paintController){
+		m_paintController = paintController ;
 		//TODO change this to fit the actual size of the window
 		m_dimension = new Dimension(800,600);
 		m_data = new MarkingMenuData(50);
@@ -97,10 +101,18 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		m_data.mouseX = e.getPoint().x;
-		m_data.mouseY = e.getPoint().y;
-		
-		m_paintUI.rePaint();
+		if(m_paintController.getState() == State.MarkingMenu) {
+			m_data.mouseX = e.getPoint().x;
+			m_data.mouseY = e.getPoint().y;
+			
+			if(Point2D.distance(m_data.mouseX, m_data.mouseY, m_data.x, m_data.y) > m_data.rayon) {
+				System.out.println("selected");
+				m_data.isDrawn = false;
+				m_paintController.toolSelected(getToolSelected());
+			}
+			
+			m_paintUI.rePaint();			
+		}
 	}
 
 	@Override

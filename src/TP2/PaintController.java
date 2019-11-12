@@ -27,7 +27,7 @@ public class PaintController implements MouseListener{
 		m_state = State.IDLE;
 		m_data = new PaintData(this);
 		
-		m_markingMenu = new MarkingMenuController();
+		m_markingMenu = new MarkingMenuController(this);
 		m_markingMenu.setTools(m_data.getTools());
 	
 		m_paintUI = new PaintUI(title, m_markingMenu, this);
@@ -63,20 +63,36 @@ public class PaintController implements MouseListener{
 		}
 	}
 
+	public void toolSelected(Tool t) {
+		m_state = State.IDLE;
+		if(t != null) {
+			System.out.println("using tool " + this.toString());
+			m_paintUI.getPanel().removeMouseListener(m_data.getActiveTool());
+			m_paintUI.getPanel().removeMouseMotionListener(m_data.getActiveTool());
+			
+			m_data.changeActiveTool(t);
+			
+			m_paintUI.getPanel().addMouseListener(t);
+			m_paintUI.getPanel().addMouseMotionListener(t);			
+		}
+		
+		m_paintUI.rePaint();
+	}
+	
 	public State getState() {
 		return m_state;
 	}
 	
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if(m_state == State.MarkingMenu) {
+		/*if(m_state == State.MarkingMenu) {
 			m_state = State.IDLE;
 			
 			Tool t = m_markingMenu.mouseReleased();
 			if(t != null)
 				switchTool(t);
 			m_paintUI.rePaint();
-		}
+		}*/
 	}
 
 	public void repaint() {

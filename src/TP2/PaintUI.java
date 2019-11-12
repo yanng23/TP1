@@ -35,7 +35,7 @@ class PaintUI extends JFrame {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
                 RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                g2.setColor(Color.YELLOW);
+                g2.setColor(Color.white);
                 g2.fillRect(0, 0, getWidth(), getHeight());
                 
                 g2.setColor(Color.BLACK);
