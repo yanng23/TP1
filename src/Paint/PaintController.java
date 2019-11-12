@@ -93,7 +93,8 @@ public class PaintController implements MouseListener{
 	public void mousePressed(MouseEvent e) {
 		if(m_state == State.IDLE && e.getButton() == MouseEvent.BUTTON3) {
 			m_state = State.MarkingMenu;
-			m_markingMenu.isDrawn = true;
+			m_markingMenu.setActive(true);
+			m_markingMenu.setOrigin(e.getPoint().x, e.getPoint().y);
 			
 			System.out.println("Changed state to MarkingMenu");			
 			m_paintUI.rePaint();
@@ -104,7 +105,7 @@ public class PaintController implements MouseListener{
 	public void mouseReleased(MouseEvent e) {
 		if(m_state == State.MarkingMenu) {
 			m_state = State.IDLE;
-			m_markingMenu.isDrawn = false;
+			m_markingMenu.setActive(false);
 			
 			System.out.println("Changed state to IDLE");
 			m_paintUI.rePaint();

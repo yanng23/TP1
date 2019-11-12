@@ -55,12 +55,9 @@ class PaintUI extends JFrame {
         		add(tool);
         	}
         }}, BorderLayout.NORTH);
-      
+        m_panel.setLocation(200,200);
         m_panel.add(markingMenu);
-        
-        JButton b = new JButton("Submit");
-        b.setBounds(50, 150, 100, 30);
-        m_panel.add(b);
+        m_panel.addMouseMotionListener(markingMenu);
         
         add(m_panel);
         
