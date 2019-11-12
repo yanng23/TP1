@@ -72,13 +72,11 @@ public class PaintController implements MouseListener{
 		m_markingMenu.setTools(getTools());
 		
 		m_paintUI = new PaintUI(title, m_markingMenu, this);
-		m_paintUI.setController(this);
 	}
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -89,7 +87,6 @@ public class PaintController implements MouseListener{
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -99,6 +96,7 @@ public class PaintController implements MouseListener{
 			m_markingMenu.isDrawn = true;
 			
 			System.out.println("Changed state to MarkingMenu");			
+			m_paintUI.rePaint();
 		}
 	}
 
@@ -109,6 +107,7 @@ public class PaintController implements MouseListener{
 			m_markingMenu.isDrawn = false;
 			
 			System.out.println("Changed state to IDLE");
+			m_paintUI.rePaint();
 		}
 	}
 	

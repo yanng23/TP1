@@ -13,25 +13,22 @@ import Paint.PaintController.Tool;
 public class MarkingMenuUI extends ComponentUI{
 	MarkingMenuController m_controller;
 	
-	
 	public MarkingMenuUI(MarkingMenuController controller) {
 		m_controller = controller;
 	}
 	
 	@Override
 	public void paint(Graphics g, JComponent c) {
-		System.out.print("paint");
-		super.paint(g,c);
-		
-		int posX = 200;
-		int posY = 350;
-		int rayon = 100;
-		//int nbr_elem = 5;
-		
-		//if(m_controller.isDrawn) {
+		if(m_controller.isDrawn) {
+			super.paint(g,c);
+			
+			int posX = 0;
+			int posY = 0;
+			int rayon = 50;
+			
 			g.setColor(Color.BLACK);
 			g.fillOval(posX - rayon, posY - rayon, 2 * rayon, 2 * rayon);
-
+			
 			g.setColor(Color.gray);
 			g.fillOval(posX - rayon + 4, posY - rayon + 4, (rayon * 2) - 8, (rayon * 2)- 8);
 			
@@ -39,18 +36,17 @@ public class MarkingMenuUI extends ComponentUI{
 			
 			Tool[] tools = m_controller.getTools();
 			//TODO ne fonctionne qu'avec certaines valeurs
-			int n = 4 * 2;
-			for(int i = 0; i < 4 ; i++) {
+			for(int i = 0; i < tools.length ; i++) {
 				g.drawLine(posX, 
 						posY,
-						posX + (int)(rayon * cos(Math.toRadians(360 / 4) * i)),
-						posY + (int)(rayon * sin(Math.toRadians(360 / 4) * i)));
-
+						posX + (int)(rayon * cos(Math.toRadians(360 / tools.length) * i)),
+						posY + (int)(rayon * sin(Math.toRadians(360 / tools.length) * i)));
 				
 				g.drawString(tools[i].toString(), 
-					posX + (int)(rayon * cos(Math.toRadians(45) * i+1)), 
-					posY + (int)(rayon * sin(Math.toRadians(45) * i+1)));
+						posX + (int)(rayon * cos((2 * Math.PI /tools.length) * i)), 
+						posY + (int)(rayon * sin((2 * Math.PI /tools.length) * i)));
 			}
-		//}
+			System.out.println("MarkingMenu printed: " + tools.length);
+		}
 	}
 }
