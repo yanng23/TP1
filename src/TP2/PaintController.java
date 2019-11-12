@@ -1,15 +1,14 @@
 package TP2;
-import java.awt.Point;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Vector;
 
-import javax.swing.AbstractAction;
-import javax.swing.event.MouseInputListener;
+import TP2.PaintData.Tool;
 
 @SuppressWarnings("serial")
 public class PaintController implements MouseListener{
+	/*
 	public class Tool extends AbstractAction implements MouseInputListener {
 		   Point o;
 			Shape shape;
@@ -32,27 +31,31 @@ public class PaintController implements MouseListener{
 	}
 		
 	Tool m_tools[] = {
-		new Tool("pen") {
-			public void mouseDragged(MouseEvent e) {
+			new Tool("pen") {
+				public void mouseDragged(MouseEvent e) {
+					Path2D.Double path = (Path2D.Double)shape;
+					if(path == null) {
+						path = new Path2D.Double();
+						path.moveTo(o.getX(), o.getY());
+						shapes.add(shape = path);
+					}
+					path.lineTo(e.getX(), e.getY());
+					m_paintUI.repaint();
+				}
+			},
+			new Tool("rect") {
+				public void mouseDragged(MouseEvent e) {
+					Rectangle2D.Double rect = (Rectangle2D.Double)shape;
+					if(rect == null) {
+						rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
+						shapes.add(shape = rect);
+					}
+					rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
+					             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
+					m_paintUI.repaint();
+				}
 			}
-		},
-		new Tool("rect") {
-			public void mouseDragged(MouseEvent e) {
-			}
-		},
-		new Tool("rect") {
-			public void mouseDragged(MouseEvent e) {
-			}
-		},
-		new Tool("rect") {
-			public void mouseDragged(MouseEvent e) {
-			}
-		},
-		new Tool("rect") {
-			public void mouseDragged(MouseEvent e) {
-			}
-		}
-	};
+	};*/
 		
 	enum State{
 			IDLE,
@@ -61,14 +64,16 @@ public class PaintController implements MouseListener{
 	
 	State m_state;
 	PaintUI m_paintUI;
+	PaintData m_data;
 	
 	MarkingMenuController m_markingMenu;
 	
 	public PaintController(String title) {
 		m_state = State.IDLE;
-
+		m_data = new PaintData(this);
+		
 		m_markingMenu = new MarkingMenuController();
-		m_markingMenu.setTools(getTools());
+		m_markingMenu.setTools(m_data.getTools());
 	
 		m_paintUI = new PaintUI(title, m_markingMenu, this);
 		m_markingMenu.setPaintUI(m_paintUI);
@@ -95,7 +100,7 @@ public class PaintController implements MouseListener{
 			m_state = State.MarkingMenu;
 			m_markingMenu.mousePressed();
 			m_markingMenu.setOrigin(e.getPoint());
-			//Without it the red line is starting from 0,0 before a mouse motion
+			//Without it the red line is starting at 0,0 before a mouse motion
 			m_markingMenu.setMousePosition(e.getPoint());
 			
 			System.out.println("Changed state to MarkingMenu");			
@@ -113,8 +118,25 @@ public class PaintController implements MouseListener{
 			m_paintUI.rePaint();
 		}
 	}
+
+	public void repaint() {
+		m_paintUI.rePaint();
+	}
 	
 	public Tool[] getTools() {
-		return m_tools;
+		return m_data.getTools();
+	}
+	
+	public Vector<Shape> getShape(){
+		return m_data.getShape();
+	}
+
+	public void switchTool(Tool tool) {
+		System.out.println("using tool " + this.toString());
+		m_paintUI.getPanel().removeMouseListener(m_data.getActiveTool());
+		m_paintUI.getPanel().removeMouseMotionListener(m_data.getActiveTool());
+		m_data.changeActiveTool(tool);
+		m_paintUI.getPanel().addMouseListener(tool);
+		m_paintUI.getPanel().addMouseMotionListener(tool);
 	}
 }

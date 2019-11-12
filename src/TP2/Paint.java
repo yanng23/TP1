@@ -5,37 +5,12 @@ package TP2;
 //////////////////////////////////////////////////////////////////////////////
 
 
-/* imports *****************************************************************/
-
-import static java.lang.Math.abs;
-import static java.lang.Math.min;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
-import java.util.Vector;
-
-import javax.swing.AbstractAction;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.event.MouseInputListener;
 
 
 /* paint *******************************************************************/
 
-@SuppressWarnings("serial")
-class Paint extends JFrame {
+class Paint {/*extends JFrame {
 	Vector<Shape> shapes = new Vector<Shape>();
 
 	class Tool extends AbstractAction implements MouseInputListener {
@@ -129,4 +104,5 @@ class Paint extends JFrame {
 			}
 		});
 	}
+
 }

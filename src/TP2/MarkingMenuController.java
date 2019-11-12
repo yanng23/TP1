@@ -7,7 +7,8 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JComponent;
 
-import TP2.PaintController.Tool;
+import TP2.PaintData.Tool;
+
 
 @SuppressWarnings("serial")
 public class MarkingMenuController extends JComponent implements MouseMotionListener{
@@ -24,7 +25,6 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 		m_dimension = new Dimension(800,600);
 		m_data = new MarkingMenuData(50);
 		m_ui = new MarkingMenuUI(this, m_data);
-		
 		
 		this.setUI(m_ui);
 	}
@@ -93,7 +93,6 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 		m_data.mouseY = mouse.y;
 	}
 	
-
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		m_data.mouseX = e.getPoint().x;

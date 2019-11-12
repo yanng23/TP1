@@ -8,7 +8,7 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
 
-import TP2.PaintController.Tool;
+import TP2.PaintData.Tool;
 
 public class MarkingMenuUI extends ComponentUI{
 	MarkingMenuController m_controller;

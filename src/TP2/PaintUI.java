@@ -19,7 +19,6 @@ class PaintUI extends JFrame {
 	PaintController m_controller;
     JPanel m_panel;
     
-	Vector<Shape> m_shapes = new Vector<Shape>();
  	
     public PaintUI(String title, MarkingMenuController markingMenu, PaintController controller){
         super(title);
@@ -38,11 +37,9 @@ class PaintUI extends JFrame {
                 g2.fillRect(0, 0, getWidth(), getHeight());
                 
                 g2.setColor(Color.BLACK);
-                for(Shape shape: m_shapes) {
+                for(Shape shape: m_controller.getShape()) {
                     g2.draw(shape);
                 }
-                
-                System.out.println("Background printed");
             }
         };
         m_controller = controller;
@@ -62,18 +59,11 @@ class PaintUI extends JFrame {
         setVisible(true);
     }
     
+    public JPanel getPanel() {
+    	return m_panel;
+    }
+    
     public void rePaint() {
     	m_panel.repaint();
     }
-    /*
-	public void setController(PaintController controller) {
-		m_controller = controller;
-		m_panel.addMouseListener(m_controller);
-		
-        add(new JToolBar() {{
-	        for(AbstractAction tool: controller.getTools()) {
-	            add(tool);
-	        }
-	    }}, BorderLayout.NORTH);
-	}*/
 }
