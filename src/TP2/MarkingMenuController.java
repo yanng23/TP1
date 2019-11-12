@@ -61,15 +61,17 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 		m_data.isDrawn = true;
 	}
 	
-	public void mouseReleased() {
+	// Return the item selected
+	public Tool mouseReleased() {
 		m_data.isDrawn = false;
+		return getToolSelected();
 	}
 	
 	public Tool getToolSelected() {
 		double teta = Math.toDegrees(Math.atan2(
 				m_data.mouseY - m_data.y, //y
 				m_data.mouseX - m_data.x)); //x
-		//We want a result between 0 to 360 counter clock 
+		//We want a result between 0 to 360 degrees counter clock 
 		if(teta < 0)
 			teta *= -1;
 		else
@@ -97,7 +99,7 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 	public void mouseDragged(MouseEvent e) {
 		m_data.mouseX = e.getPoint().x;
 		m_data.mouseY = e.getPoint().y;
-		System.out.println(getToolSelected());
+		
 		m_paintUI.rePaint();
 	}
 
