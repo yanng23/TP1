@@ -7,12 +7,14 @@ import java.awt.Point;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.event.MouseInputListener;
+
 
 import TP2.PaintController.State;
 
@@ -27,7 +29,7 @@ public class PaintData {
 		m_controller = controller;
 		
 		m_tools = new Tool[] {
-				new Tool("pen", m_controller) {
+				new Tool("Pen", m_controller) {
 					public void mouseDragged(MouseEvent e) {
 						if(m_controller.getState() == State.IDLE) {
 							Path2D.Double path = (Path2D.Double)shape;
@@ -41,7 +43,7 @@ public class PaintData {
 						}
 					}
 				},
-				new Tool("rect", m_controller) {
+				new Tool("Rect", m_controller) {
 					public void mouseDragged(MouseEvent e) {
 							if(m_controller.getState() == State.IDLE) {
 							Rectangle2D.Double rect = (Rectangle2D.Double)shape;
@@ -50,6 +52,20 @@ public class PaintData {
 								m_shapes.add(shape = rect);
 							}
 							rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
+							             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
+							m_controller.repaint();
+						}
+					}
+				},
+				new Tool("Ellipse", m_controller) {
+					public void mouseDragged(MouseEvent e) {
+							if(m_controller.getState() == State.IDLE) {
+							Ellipse2D.Double ellipse = (Ellipse2D.Double)shape;
+							if(ellipse == null) {
+								ellipse = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
+								m_shapes.add(shape = ellipse);
+							}
+							ellipse.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
 							             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
 							m_controller.repaint();
 						}
@@ -74,14 +90,6 @@ public class PaintData {
 			}
 			public void actionPerformed(ActionEvent e) {
 				m_controller.switchTool(this);
-				/*
-				System.out.println("using tool " + this);
-				panel.removeMouseListener(tool)
-				panel.removeMouseMotionListener(tool);
-				m_tool = this;
-				panel.addMouseListener(tool);
-				panel.addMouseMotionListener(tool);
-				*/
 			}
 			public void mouseClicked(MouseEvent e) {}
 			public void mouseEntered(MouseEvent e) {}
