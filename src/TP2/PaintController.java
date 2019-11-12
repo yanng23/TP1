@@ -93,7 +93,7 @@ public class PaintController implements MouseListener{
 	public void mousePressed(MouseEvent e) {
 		if(m_state == State.IDLE && e.getButton() == MouseEvent.BUTTON3) {
 			m_state = State.MarkingMenu;
-			m_markingMenu.setActive(true);
+			m_markingMenu.mousePressed();
 			m_markingMenu.setOrigin(e.getPoint());
 			//Without it the red line is starting from 0,0 before a mouse motion
 			m_markingMenu.setMousePosition(e.getPoint());
@@ -107,7 +107,7 @@ public class PaintController implements MouseListener{
 	public void mouseReleased(MouseEvent e) {
 		if(m_state == State.MarkingMenu) {
 			m_state = State.IDLE;
-			m_markingMenu.setActive(false);
+			m_markingMenu.mouseReleased();
 			
 			System.out.println("Changed state to IDLE");
 			m_paintUI.rePaint();

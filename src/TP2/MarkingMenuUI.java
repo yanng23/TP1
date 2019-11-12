@@ -51,7 +51,6 @@ public class MarkingMenuUI extends ComponentUI{
 					m_data.y,
 					m_data.mouseX,
 					m_data.mouseY);
-			System.out.println("Paint");
 		}
 	}
 }

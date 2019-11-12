@@ -57,8 +57,30 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 		return m_tools;
 	}
 	
-	public void setActive(boolean active) {
-		m_data.isDrawn = active;
+	public void mousePressed() {
+		m_data.isDrawn = true;
+	}
+	
+	public void mouseReleased() {
+		m_data.isDrawn = false;
+	}
+	
+	public Tool getToolSelected() {
+		double teta = Math.toDegrees(Math.atan2(
+				m_data.mouseY - m_data.y, //y
+				m_data.mouseX - m_data.x)); //x
+		//We want a result between 0 to 360 counter clock 
+		if(teta < 0)
+			teta *= -1;
+		else
+			teta  = 360.d - teta;
+		
+		for(int i = 0; i < m_tools.length; i++) {
+			if(teta > (i * (360 / m_tools.length)) && teta < ((i + 1) * (360 / m_tools.length))) { 
+				return m_tools[i];
+			}
+		}
+		return null;
 	}
 	
 	public void setOrigin(Point origin) {
@@ -76,9 +98,8 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 	public void mouseDragged(MouseEvent e) {
 		m_data.mouseX = e.getPoint().x;
 		m_data.mouseY = e.getPoint().y;
-		
+		System.out.println(getToolSelected());
 		m_paintUI.rePaint();
-		System.out.println(m_data.mouseX);
 	}
 
 	@Override
