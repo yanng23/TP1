@@ -3,6 +3,7 @@ package TP2;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -15,18 +16,30 @@ import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.event.MouseInputListener;
 
-
 import TP2.PaintController.State;
+import javafx.util.Pair;
 
 
 public class PaintData {
 	PaintController m_controller;
-	Vector<Shape> m_shapes = new Vector<Shape>();
+	Vector<Pair<Shape, Color>> m_shapes = new Vector<Pair<Shape, Color>>();
+	Color[] m_colors;
+	Color m_colorSelected;
+	
 	Tool m_tools[];
 	Tool m_tool;
 	
 	public PaintData(PaintController controller) {
 		m_controller = controller;
+		
+		m_colorSelected = Color.pink;
+		m_colors = new Color[] {
+				Color.black,
+				Color.green,
+				Color.yellow,
+				Color.pink,
+				Color.orange
+		};
 		
 		m_tools = new Tool[] {
 				new Tool("Pen", m_controller) {
@@ -36,7 +49,7 @@ public class PaintData {
 							if(path == null) {
 								path = new Path2D.Double();
 								path.moveTo(o.getX(), o.getY());
-								m_shapes.add(shape = path);
+								m_shapes.add(new Pair<Shape, Color>(shape = path, m_colorSelected));
 							}
 							path.lineTo(e.getX(), e.getY());
 							m_controller.repaint();			
@@ -49,7 +62,7 @@ public class PaintData {
 							Rectangle2D.Double rect = (Rectangle2D.Double)shape;
 							if(rect == null) {
 								rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
-								m_shapes.add(shape = rect);
+								m_shapes.add(new Pair<Shape, Color>(shape = rect, m_colorSelected));
 							}
 							rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
 							             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
@@ -63,7 +76,7 @@ public class PaintData {
 							Ellipse2D.Double ellipse = (Ellipse2D.Double)shape;
 							if(ellipse == null) {
 								ellipse = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
-								m_shapes.add(shape = ellipse);
+								m_shapes.add(new Pair<Shape, Color>(shape = ellipse, m_colorSelected));
 							}
 							ellipse.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
 							             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
@@ -108,7 +121,7 @@ public class PaintData {
 		m_tool = tool;
 	}
 	
-	public Vector<Shape> getShape(){
+	public Vector<Pair<Shape, Color>> getShape(){
 		return m_shapes;
 	}
 

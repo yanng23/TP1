@@ -14,6 +14,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
+import javafx.util.Pair;
+
 @SuppressWarnings("serial")
 class PaintUI extends JFrame {
 	PaintController m_controller;
@@ -37,8 +39,9 @@ class PaintUI extends JFrame {
                 g2.fillRect(0, 0, getWidth(), getHeight());
                 
                 g2.setColor(Color.BLACK);
-                for(Shape shape: m_controller.getShape()) {
-                    g2.draw(shape);
+                for(Pair<Shape, Color> shape: m_controller.getShape()) {
+                	g2.setColor(shape.getValue());
+                    g2.draw(shape.getKey());
                 }
             }
         };

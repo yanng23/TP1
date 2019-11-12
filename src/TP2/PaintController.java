@@ -1,10 +1,12 @@
 package TP2;
+import java.awt.Color;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
 
 import TP2.PaintData.Tool;
+import javafx.util.Pair;
 
 @SuppressWarnings("serial")
 public class PaintController implements MouseListener{
@@ -85,7 +87,7 @@ public class PaintController implements MouseListener{
 		return m_data.getTools();
 	}
 	
-	public Vector<Shape> getShape(){
+	public Vector<Pair<Shape, Color>> getShape(){
 		return m_data.getShape();
 	}
 
