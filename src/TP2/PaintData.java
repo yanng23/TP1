@@ -14,6 +14,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
 
 import TP2.PaintController.State;
@@ -45,7 +46,7 @@ public class PaintData {
 		m_tools = new Tool[] {
 				new Tool("Pen", m_controller) {
 					public void mouseDragged(MouseEvent e) {
-						if(m_controller.getState() == State.IDLE) {
+						if(SwingUtilities.isLeftMouseButton(e) && m_controller.getState() == State.IDLE) {
 							Path2D.Double path = (Path2D.Double)shape;
 							if(path == null) {
 								path = new Path2D.Double();
@@ -59,7 +60,7 @@ public class PaintData {
 				},
 				new Tool("Rect", m_controller) {
 					public void mouseDragged(MouseEvent e) {
-							if(m_controller.getState() == State.IDLE) {
+							if(SwingUtilities.isLeftMouseButton(e) && m_controller.getState() == State.IDLE) {
 							Rectangle2D.Double rect = (Rectangle2D.Double)shape;
 							if(rect == null) {
 								rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
@@ -73,7 +74,7 @@ public class PaintData {
 				},
 				new Tool("Ellipse", m_controller) {
 					public void mouseDragged(MouseEvent e) {
-							if(m_controller.getState() == State.IDLE) {
+							if(SwingUtilities.isLeftMouseButton(e) && m_controller.getState() == State.IDLE) {
 							Ellipse2D.Double ellipse = (Ellipse2D.Double)shape;
 							if(ellipse == null) {
 								ellipse = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);

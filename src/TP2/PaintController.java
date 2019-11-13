@@ -5,6 +5,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
 
+import javax.swing.SwingUtilities;
+
 import TP2.PaintData.Tool;
 import javafx.util.Pair;
 
@@ -65,7 +67,6 @@ public class PaintController implements MouseListener{
 	}
 
 	public void toolSelected(Tool t) {
-		m_state = State.IDLE;
 		if(t != null) {
 			System.out.println("using tool " + this.toString());
 			m_paintUI.getPanel().removeMouseListener(m_data.getActiveTool());
@@ -81,7 +82,7 @@ public class PaintController implements MouseListener{
 	}
 	
 	public void colorSelected() {
-		
+		m_state = State.IDLE;
 	}
 	
 	public State getState() {
@@ -90,14 +91,11 @@ public class PaintController implements MouseListener{
 	
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		/*if(m_state == State.MarkingMenu) {
+		if(SwingUtilities.isRightMouseButton(e)) {
 			m_state = State.IDLE;
-			
-			Tool t = m_markingMenu.mouseReleased();
-			if(t != null)
-				switchTool(t);
+			m_markingMenu.setIDLE();
 			m_paintUI.rePaint();
-		}*/
+		}
 	}
 
 	public void repaint() {
@@ -113,7 +111,7 @@ public class PaintController implements MouseListener{
 	}
 
 	public void switchTool(Tool tool) {
-		System.out.println("using tool " + this.toString());
+		System.out.println("using tool " + tool.toString());
 		m_paintUI.getPanel().removeMouseListener(m_data.getActiveTool());
 		m_paintUI.getPanel().removeMouseMotionListener(m_data.getActiveTool());
 		
@@ -124,7 +122,8 @@ public class PaintController implements MouseListener{
 	}
 
 	public void switchColor(Color colorSelected) {
-		m_data.changeColor(colorSelected);
 		System.out.println("using color " + colorSelected.toString());
+		m_data.changeColor(colorSelected);
+		m_state = State.IDLE;
 	}
 }

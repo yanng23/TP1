@@ -34,7 +34,7 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 		m_paintController = paintController ;
 		//TODO change this to fit the actual size of the window
 		m_dimension = new Dimension(800,600);
-		m_data = new MarkingMenuData(50);
+		m_data = new MarkingMenuData(75);
 		m_ui = new MarkingMenuUI(this, m_data);
 		
 		m_state = State.IDLE;
@@ -46,6 +46,7 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 		m_paintUI = paintUI;
 	}
 	
+	/* These functions are required for the Jcomponent to be drawn */
     @Override
     public Dimension getPreferredSize() {
         return m_dimension ;
@@ -60,7 +61,7 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
     public Dimension getMinimumSize() {
         return m_dimension ;
     }
-    
+    /*------------------------------------------------------------*/
 	
 	public void setTools(Tool[] t) {
 		m_data.setTools(t);
@@ -115,7 +116,7 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 			teta *= -1;
 		else
 			teta  = 360.d - teta;
-		Color[] c = getColors();
+		
 		for(int i = 0; i < getColors().length; i++) {
 			if(teta > (i * (360 / getColors().length)) && teta <= ((i + 1) * (360 / getColors().length))) { 
 				return getColors()[i];
@@ -134,6 +135,7 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 		m_data.mouseY = mouse.y;
 	}
 	
+	/* MouseMotionListener implementation*/
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		m_data.mouseX = e.getPoint().x;
@@ -142,9 +144,8 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 		if(Point2D.distance(m_data.mouseX, m_data.mouseY, m_data.x, m_data.y) > m_data.rayon) {
 			if(m_state == State.SelectingTool) {
 				m_paintController.toolSelected(getToolSelected());
-				//Without it the red line is starting at 0,0 before a mouse motion
+				//Without this line the red line is starting at 0,0 before a mouse motion
 				setMousePosition(e.getPoint());
-				
 				setOrigin(e.getPoint());
 				m_state = State.SelectingColor;
 			}
@@ -164,6 +165,10 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 
 	public void setColors(Color[] colors) {
 		m_data.setColors(colors);
+	}
+	
+	public void setIDLE() {
+		m_state = State.IDLE;
 	}
 	
 	public void setIsSelectingTool() {
