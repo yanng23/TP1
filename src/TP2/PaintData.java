@@ -38,9 +38,9 @@ public class PaintData {
 		m_colors = new Color[] {
 				Color.black,
 				Color.green,
-				Color.yellow,
 				Color.pink,
-				Color.orange
+				Color.yellow,
+				Color.orange,
 		};
 		
 		m_tools = new Tool[] {

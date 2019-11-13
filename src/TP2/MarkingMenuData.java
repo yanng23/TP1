@@ -15,7 +15,6 @@ public class MarkingMenuData {
 	Color[] m_colors;
 	
 	public Tool m_selectedTool;
-	public Color m_selectedColor;
 	
 	public MarkingMenuData(int rayon) {
 		this.x = 0;
@@ -38,5 +37,13 @@ public class MarkingMenuData {
 	
 	public Color[] getColors() {
 		return m_colors;
+	}
+	
+	public void setCurrentlySelectedTools(Tool t) {
+		m_selectedTool = t;
+	}
+	
+	public Tool getCurrentlySelectedTools() {
+		return m_selectedTool;
 	}
 }

@@ -140,6 +140,10 @@ public class MarkingMenu extends JComponent implements MouseMotionListener{
 		m_data.mouseX = e.getPoint().x;
 		m_data.mouseY = e.getPoint().y;
 		
+		Tool t = getToolSelected();
+		if(t != null)
+			m_data.setCurrentlySelectedTools(t);
+		
 		if(Point2D.distance(m_data.mouseX, m_data.mouseY, m_data.x, m_data.y) > m_data.rayon) {
 			if(m_state == State.SelectingTool) {
 				m_paintController.toolSelected(getToolSelected());
