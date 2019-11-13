@@ -1,108 +1,126 @@
 package TP2;
-//////////////////////////////////////////////////////////////////////////////
-// file    : Paint.java
-// content : basic painting app
-//////////////////////////////////////////////////////////////////////////////
-
+import java.awt.Color;
+import java.awt.Shape;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
+import TP2.PaintData.Tool;
+import javafx.util.Pair;
 
-/* paint *******************************************************************/
-
-class Paint {/*extends JFrame {
-	Vector<Shape> shapes = new Vector<Shape>();
-
-	class Tool extends AbstractAction implements MouseInputListener {
-	   Point o;
-		Shape shape;
-		public Tool(String name) { super(name); }
-		public void actionPerformed(ActionEvent e) {
-			System.out.println("using tool " + this);
-			panel.removeMouseListener(tool);
-			panel.removeMouseMotionListener(tool);
-			tool = this;
-			panel.addMouseListener(tool);
-			panel.addMouseMotionListener(tool);
-		}
-		public void mouseClicked(MouseEvent e) {}
-		public void mouseEntered(MouseEvent e) {}
-		public void mouseExited(MouseEvent e) {}
-		public void mousePressed(MouseEvent e) { o = e.getPoint(); }
-		public void mouseReleased(MouseEvent e) { shape = null; }
-		public void mouseDragged(MouseEvent e) {}
-		public void mouseMoved(MouseEvent e) {}
+public class Paint implements MouseListener{
+		
+	public enum State{
+			IDLE,
+			MarkingMenu,
+			MarkingMenuColor,
 	}
 	
-	Tool tools[] = {
-		new Tool("pen") {
-			public void mouseDragged(MouseEvent e) {
-				Path2D.Double path = (Path2D.Double)shape;
-				if(path == null) {
-					path = new Path2D.Double();
-					path.moveTo(o.getX(), o.getY());
-					shapes.add(shape = path);
-				}
-				path.lineTo(e.getX(), e.getY());
-				panel.repaint();
-			}
-		},
-		new Tool("rect") {
-			public void mouseDragged(MouseEvent e) {
-				Rectangle2D.Double rect = (Rectangle2D.Double)shape;
-				if(rect == null) {
-					rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
-					shapes.add(shape = rect);
-				}
-				rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
-				             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
-				panel.repaint();
-			}
-		}
-	};
-	Tool tool;
-
-	JPanel panel;
+	State m_state;
+	PaintUI m_paintUI;
+	PaintData m_data;
+	
+	MarkingMenu m_markingMenu;
 	
 	public Paint(String title) {
-		super(title);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setMinimumSize(new Dimension(800, 600));
-		add(new JToolBar() {{
-			for(AbstractAction tool: tools) {
-				add(tool);
-			}
-		}}, BorderLayout.NORTH);
-		add(panel = new JPanel() {	
-			public void paintComponent(Graphics g) {
-				super.paintComponent(g);	
-				Graphics2D g2 = (Graphics2D)g;
-				g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-				                    RenderingHints.VALUE_ANTIALIAS_ON);
+		m_state = State.IDLE;
+		m_data = new PaintData(this);
 		
-				g2.setColor(Color.WHITE);
-				g2.fillRect(0, 0, getWidth(), getHeight());
-				
-				g2.setColor(Color.BLACK);
-				for(Shape shape: shapes) {
-					g2.draw(shape);
-				}
-			}
-		});
-
-		pack();
-		setVisible(true);
+		m_markingMenu = new MarkingMenu(this);
+		m_markingMenu.setTools(m_data.getTools());
+		m_markingMenu.setColors(m_data.getColors());
+	
+		m_paintUI = new PaintUI(title, m_markingMenu, this);
+		m_markingMenu.setPaintUI(m_paintUI);
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
 	}
 
-
-/* main *********************************************************************/
-
-	public static void main(String argv[]) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				PaintController paint = new PaintController("paint");
-			}
-		});
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if(m_state == State.IDLE && e.getButton() == MouseEvent.BUTTON3) {
+			m_state = State.MarkingMenu;
+			m_markingMenu.mousePressed();
+			m_markingMenu.setOrigin(e.getPoint());
+			//Without it the red line is starting at 0,0 before a mouse motion
+			m_markingMenu.setMousePosition(e.getPoint());
+			m_markingMenu.setIsSelectingTool();
+			System.out.println("Changed state to MarkingMenu");			
+			m_paintUI.repaint();
+		}
+	}
+
+	public void toolSelected(Tool t) {
+		if(t != null) {
+			System.out.println("using tool " + this.toString());
+			m_paintUI.getPanel().removeMouseListener(m_data.getActiveTool());
+			m_paintUI.getPanel().removeMouseMotionListener(m_data.getActiveTool());
+			
+			m_data.changeTool(t);
+			
+			m_paintUI.getPanel().addMouseListener(t);
+			m_paintUI.getPanel().addMouseMotionListener(t);			
+		}
+		
+		m_paintUI.rePaint();
+	}
+	
+	public void colorSelected() {
+		m_state = State.IDLE;
+	}
+	
+	public State getState() {
+		return m_state;
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if(SwingUtilities.isRightMouseButton(e)) {
+			m_state = State.IDLE;
+			m_markingMenu.setIDLE();
+			m_paintUI.rePaint();
+		}
+	}
+
+	public void repaint() {
+		m_paintUI.rePaint();
+	}
+	
+	public Tool[] getTools() {
+		return m_data.getTools();
+	}
+	
+	public Vector<Pair<Shape, Color>> getShape(){
+		return m_data.getShape();
+	}
+
+	public void switchTool(Tool tool) {
+		m_paintUI.getPanel().removeMouseListener(m_data.getActiveTool());
+		m_paintUI.getPanel().removeMouseMotionListener(m_data.getActiveTool());
+		
+		m_data.changeTool(tool);
+		
+		m_paintUI.getPanel().addMouseListener(tool);
+		m_paintUI.getPanel().addMouseMotionListener(tool);
+	}
+
+	public void switchColor(Color colorSelected) {
+		m_data.changeColor(colorSelected);
+		m_state = State.IDLE;
+	}
 }

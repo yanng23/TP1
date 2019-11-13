@@ -6,10 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -18,11 +16,11 @@ import javafx.util.Pair;
 
 @SuppressWarnings("serial")
 class PaintUI extends JFrame {
-	PaintController m_controller;
+	Paint m_controller;
     JPanel m_panel;
     
  	
-    public PaintUI(String title, MarkingMenuController markingMenu, PaintController controller){
+    public PaintUI(String title, MarkingMenu markingMenu, Paint controller){
         super(title);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(800, 600));

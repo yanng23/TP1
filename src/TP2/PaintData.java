@@ -17,12 +17,12 @@ import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
 
-import TP2.PaintController.State;
+import TP2.Paint.State;
 import javafx.util.Pair;
 
 
 public class PaintData {
-	PaintController m_controller;
+	Paint m_controller;
 	Vector<Pair<Shape, Color>> m_shapes = new Vector<Pair<Shape, Color>>();
 
 	Color[] m_colors;
@@ -31,7 +31,7 @@ public class PaintData {
 	Tool m_tools[];
 	Tool m_tool;
 	
-	public PaintData(PaintController controller) {
+	public PaintData(Paint controller) {
 		m_controller = controller;
 		
 		m_color = Color.black;
@@ -101,8 +101,8 @@ public class PaintData {
 		   Point o;
 		   String m_name;
 			Shape shape;
-			PaintController m_paintController;
-			public Tool(String name, PaintController paintController) { 
+			Paint m_paintController;
+			public Tool(String name, Paint paintController) { 
 				super(name); 
 				m_name = name;
 				m_paintController = paintController;

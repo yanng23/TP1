@@ -9,12 +9,11 @@ import java.awt.geom.Point2D;
 
 import javax.swing.JComponent;
 
-import TP2.PaintController.State;
 import TP2.PaintData.Tool;
 
 
 @SuppressWarnings("serial")
-public class MarkingMenuController extends JComponent implements MouseMotionListener{
+public class MarkingMenu extends JComponent implements MouseMotionListener{
 	public enum State {
 		IDLE,
 		SelectingTool,
@@ -25,12 +24,12 @@ public class MarkingMenuController extends JComponent implements MouseMotionList
 	
 	MarkingMenuUI m_ui;
 	MarkingMenuData m_data;
-	PaintController m_paintController;
+	Paint m_paintController;
 	
 	Dimension m_dimension;
 	State m_state;
 	
-	public MarkingMenuController(PaintController paintController){
+	public MarkingMenu(Paint paintController){
 		m_paintController = paintController ;
 		//TODO change this to fit the actual size of the window
 		m_dimension = new Dimension(800,600);

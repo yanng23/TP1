@@ -8,14 +8,13 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
 
-import TP2.MarkingMenuController.State;
-import TP2.PaintData.Tool;
+import TP2.MarkingMenu.State;
 
 public class MarkingMenuUI extends ComponentUI{
-	MarkingMenuController m_controller;
+	MarkingMenu m_controller;
 	MarkingMenuData m_data;
 	
-	public MarkingMenuUI(MarkingMenuController controller, MarkingMenuData data) {
+	public MarkingMenuUI(MarkingMenu controller, MarkingMenuData data) {
 		m_controller = controller;
 		m_data = data;
 	}
@@ -40,7 +39,6 @@ public class MarkingMenuUI extends ComponentUI{
 				items = m_controller.getTools();				
 			}
 			
-			//Tool[] tools = m_controller.getTools();
 			for(int i = 0; i < items.length ; i++) {
 				g.drawLine(m_data.x, 
 						m_data.y,
