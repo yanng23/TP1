@@ -36,6 +36,7 @@ public class Paint implements MouseListener{
 		m_markingMenu.setPaintUI(m_paintUI);
 	}
 	
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub

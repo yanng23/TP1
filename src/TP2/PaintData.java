@@ -46,7 +46,7 @@ public class PaintData {
 		m_tools = new Tool[] {
 				new Tool("Pen", m_controller) {
 					public void mouseDragged(MouseEvent e) {
-						if(SwingUtilities.isLeftMouseButton(e) && m_controller.getState() == State.IDLE) {
+						if(SwingUtilities.isLeftMouseButton(e) && m_controller.getState() == State.IDLE && o != null) {
 							Path2D.Double path = (Path2D.Double)shape;
 							if(path == null) {
 								path = new Path2D.Double();
@@ -60,7 +60,7 @@ public class PaintData {
 				},
 				new Tool("Rect", m_controller) {
 					public void mouseDragged(MouseEvent e) {
-							if(SwingUtilities.isLeftMouseButton(e) && m_controller.getState() == State.IDLE) {
+							if(SwingUtilities.isLeftMouseButton(e) && m_controller.getState() == State.IDLE && o != null) {
 							Rectangle2D.Double rect = (Rectangle2D.Double)shape;
 							if(rect == null) {
 								rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
@@ -74,7 +74,7 @@ public class PaintData {
 				},
 				new Tool("Ellipse", m_controller) {
 					public void mouseDragged(MouseEvent e) {
-							if(SwingUtilities.isLeftMouseButton(e) && m_controller.getState() == State.IDLE) {
+							if(SwingUtilities.isLeftMouseButton(e) && m_controller.getState() == State.IDLE && o != null) {
 							Ellipse2D.Double ellipse = (Ellipse2D.Double)shape;
 							if(ellipse == null) {
 								ellipse = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);

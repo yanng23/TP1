@@ -20,11 +20,11 @@ public class MarkingMenu extends JComponent implements MouseMotionListener{
 		SelectingColor
 	}
 	
-	PaintUI m_paintUI;
 	
 	MarkingMenuUI m_ui;
 	MarkingMenuData m_data;
 	Paint m_paintController;
+	PaintUI m_paintUI;
 	
 	Dimension m_dimension;
 	State m_state;
