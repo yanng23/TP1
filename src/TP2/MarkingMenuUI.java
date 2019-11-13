@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
 
+import TP2.MarkingMenuController.State;
 import TP2.PaintData.Tool;
 
 public class MarkingMenuUI extends ComponentUI{
@@ -21,7 +22,7 @@ public class MarkingMenuUI extends ComponentUI{
 	
 	@Override
 	public void paint(Graphics g, JComponent c) {
-		if(m_data.isDrawn) {
+		if(m_controller.getState() != State.IDLE) {
 			super.paint(g,c);
 			
 			g.setColor(Color.BLACK);
@@ -32,16 +33,23 @@ public class MarkingMenuUI extends ComponentUI{
 			
 			g.setColor(Color.BLACK);
 			
-			Tool[] tools = m_controller.getTools();
-			for(int i = 0; i < tools.length ; i++) {
+			Object[] items = null;
+			if(m_controller.getState() == State.SelectingColor)
+				items = m_controller.getColors();
+			else {
+				items = m_controller.getTools();				
+			}
+			
+			//Tool[] tools = m_controller.getTools();
+			for(int i = 0; i < items.length ; i++) {
 				g.drawLine(m_data.x, 
 						m_data.y,
-						m_data.x + (int)(m_data.rayon * cos(Math.toRadians(360 / tools.length) * i)),
-						m_data.y + (int)(m_data.rayon * sin(Math.toRadians(360 / tools.length) * i)));
+						m_data.x + (int)(m_data.rayon * cos(Math.toRadians(360 / items.length) * i)),
+						m_data.y + (int)(m_data.rayon * sin(Math.toRadians(360 / items.length) * i)));
 				
-				g.drawString(tools[i].toString(), 
-						m_data.x + (int)(m_data.rayon * cos((2 * Math.PI /tools.length) * i)), 
-						m_data.y + (int)(m_data.rayon * sin((2 * Math.PI /tools.length) * i)));
+				g.drawString(items[i].toString(), 
+						m_data.x + (int)(m_data.rayon * cos((2 * Math.PI /items.length) * i)), 
+						m_data.y + (int)(m_data.rayon * sin((2 * Math.PI /items.length) * i)));
 			}
 			
 			

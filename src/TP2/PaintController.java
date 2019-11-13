@@ -14,7 +14,7 @@ public class PaintController implements MouseListener{
 	public enum State{
 			IDLE,
 			MarkingMenu,
-			Drawing
+			MarkingMenuColor,
 	}
 	
 	State m_state;
@@ -29,6 +29,7 @@ public class PaintController implements MouseListener{
 		
 		m_markingMenu = new MarkingMenuController(this);
 		m_markingMenu.setTools(m_data.getTools());
+		m_markingMenu.setColors(m_data.getColors());
 	
 		m_paintUI = new PaintUI(title, m_markingMenu, this);
 		m_markingMenu.setPaintUI(m_paintUI);
@@ -57,7 +58,7 @@ public class PaintController implements MouseListener{
 			m_markingMenu.setOrigin(e.getPoint());
 			//Without it the red line is starting at 0,0 before a mouse motion
 			m_markingMenu.setMousePosition(e.getPoint());
-			
+			m_markingMenu.setIsSelectingTool();
 			System.out.println("Changed state to MarkingMenu");			
 			m_paintUI.repaint();
 		}
@@ -70,13 +71,17 @@ public class PaintController implements MouseListener{
 			m_paintUI.getPanel().removeMouseListener(m_data.getActiveTool());
 			m_paintUI.getPanel().removeMouseMotionListener(m_data.getActiveTool());
 			
-			m_data.changeActiveTool(t);
+			m_data.changeTool(t);
 			
 			m_paintUI.getPanel().addMouseListener(t);
 			m_paintUI.getPanel().addMouseMotionListener(t);			
 		}
 		
 		m_paintUI.rePaint();
+	}
+	
+	public void colorSelected() {
+		
 	}
 	
 	public State getState() {
@@ -111,8 +116,15 @@ public class PaintController implements MouseListener{
 		System.out.println("using tool " + this.toString());
 		m_paintUI.getPanel().removeMouseListener(m_data.getActiveTool());
 		m_paintUI.getPanel().removeMouseMotionListener(m_data.getActiveTool());
-		m_data.changeActiveTool(tool);
+		
+		m_data.changeTool(tool);
+		
 		m_paintUI.getPanel().addMouseListener(tool);
 		m_paintUI.getPanel().addMouseMotionListener(tool);
+	}
+
+	public void switchColor(Color colorSelected) {
+		m_data.changeColor(colorSelected);
+		System.out.println("using color " + colorSelected.toString());
 	}
 }

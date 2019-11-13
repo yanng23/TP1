@@ -23,8 +23,9 @@ import javafx.util.Pair;
 public class PaintData {
 	PaintController m_controller;
 	Vector<Pair<Shape, Color>> m_shapes = new Vector<Pair<Shape, Color>>();
+
 	Color[] m_colors;
-	Color m_colorSelected;
+	Color m_color;
 	
 	Tool m_tools[];
 	Tool m_tool;
@@ -32,7 +33,7 @@ public class PaintData {
 	public PaintData(PaintController controller) {
 		m_controller = controller;
 		
-		m_colorSelected = Color.pink;
+		m_color = Color.black;
 		m_colors = new Color[] {
 				Color.black,
 				Color.green,
@@ -49,7 +50,7 @@ public class PaintData {
 							if(path == null) {
 								path = new Path2D.Double();
 								path.moveTo(o.getX(), o.getY());
-								m_shapes.add(new Pair<Shape, Color>(shape = path, m_colorSelected));
+								m_shapes.add(new Pair<Shape, Color>(shape = path, m_color));
 							}
 							path.lineTo(e.getX(), e.getY());
 							m_controller.repaint();			
@@ -62,7 +63,7 @@ public class PaintData {
 							Rectangle2D.Double rect = (Rectangle2D.Double)shape;
 							if(rect == null) {
 								rect = new Rectangle2D.Double(o.getX(), o.getY(), 0, 0);
-								m_shapes.add(new Pair<Shape, Color>(shape = rect, m_colorSelected));
+								m_shapes.add(new Pair<Shape, Color>(shape = rect, m_color));
 							}
 							rect.setRect(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
 							             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
@@ -76,7 +77,7 @@ public class PaintData {
 							Ellipse2D.Double ellipse = (Ellipse2D.Double)shape;
 							if(ellipse == null) {
 								ellipse = new Ellipse2D.Double(o.getX(), o.getY(), 0, 0);
-								m_shapes.add(new Pair<Shape, Color>(shape = ellipse, m_colorSelected));
+								m_shapes.add(new Pair<Shape, Color>(shape = ellipse, m_color));
 							}
 							ellipse.setFrame(min(e.getX(), o.getX()), min(e.getY(), o.getY()),
 							             abs(e.getX()- o.getX()), abs(e.getY()- o.getY()));
@@ -89,6 +90,10 @@ public class PaintData {
 	
 	public Tool[] getTools() {
 		return m_tools;
+	}
+	
+	public Color[] getColors() {
+		return m_colors;
 	}
 	
 	class Tool extends AbstractAction implements MouseInputListener {
@@ -114,11 +119,18 @@ public class PaintData {
 			public String toString() {return m_name; }
 		}
 		
+
+	public void changeTool(Tool t) {
+		m_tool = t;
+	}
 	
-
-
-	public void changeActiveTool(Tool tool) {
+	public void changeColor(Color c) {
+		m_color = c;
+	}
+	
+	public void changeActiveColoredTool(Tool tool, Color color) {
 		m_tool = tool;
+		m_color = color;
 	}
 	
 	public Vector<Pair<Shape, Color>> getShape(){
