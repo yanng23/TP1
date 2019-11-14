@@ -50,16 +50,17 @@ public class MarkingMenuUI extends ComponentUI{
 					g.fillArc(m_data.x - m_data.rayon + 4, m_data.y - m_data.rayon + 4, (m_data.rayon * 2) - 8, (m_data.rayon * 2)- 8, i * angle_slice, angle_slice);
 
 				}
+				int size = 0;
 				for(int i = 0; i < items.length; i++) {
 					g.setColor(Color.black);
 					g.drawLine(m_data.x, 
 							m_data.y,
 							m_data.x + (int)(m_data.rayon * cos(Math.toRadians(360 / items.length) * i)),
 							m_data.y + (int)(m_data.rayon * sin(Math.toRadians(360 / items.length) * i)));
-						
+					size = g.getFontMetrics().stringWidth(items[i].toString());
 					g.drawString(items[i].toString(), 
-						m_data.x + (int)(m_data.rayon * cos((2 * Math.PI /items.length) * i)), 
-						m_data.y + (int)(m_data.rayon * sin((2 * Math.PI /items.length) * i)));
+							m_data.x - size/2 + (int)(m_data.rayon * cos(Math.toRadians((2*i+1)*360/(items.length*2))))/2, 
+							m_data.y + (int)(m_data.rayon * sin(Math.toRadians((2*i+1)*360/(items.length*2))))/2);
 				}
 			}
 			
