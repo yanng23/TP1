@@ -1,4 +1,4 @@
-# Sujet tp1 et tp2
+# TP1 ET TP2
 Fontfreyde Joachim
 Gautier Yann
 
